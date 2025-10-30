@@ -1,5 +1,6 @@
 package com.flexitimermvc;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,17 +22,49 @@ public class Feature1_BasicTimerTest {
     }
 
     @Test
+    @DisplayName("타이머를 시작하면 작은 창이 표시되고 초기시간이 표시된다.")
     void whenTimerStartsThenCompactWindowAndInitialTimeDisplayed() {
+        // given : 25분 작업 타이머 설정
+        mainWindow.setWorkDuration(25);
 
+        // when : 타이머 시작
+        mainWindow.startTimer();
+
+        // then : 작은 창이 표시됨
+        assertTrue(mainWindow.isCompactTimerVisible(),
+                "타이머 시작 시 작은 팡이 표시되어야 합니다.");
+
+        // And : 25:00 표시
+        assertEquals("25:00", mainWindow.getDisplayedTime(),
+                "초기 시간이 25:00으로 표시되어야 합니다.");
     }
 
     @Test
-    void whenTimerStartsThenCountdownEverySecond() {
+    @DisplayName("타이머가 시작되면 1초마다 카운트 된다.")
+    void whenTimerStartsThenCountdownEverySecond() throws InterruptedException{
+        // given: 25분 작업 타이머 설정 및 시작
+        mainWindow.setWorkDuration(25);
+        mainWindow.startTimer();
 
+        // when: 1초 대기
+        Thread.sleep(1100);
+
+        // then: 24:59 표시
+        assertEquals("24:59", mainWindow.getDisplayedTime(),
+                "1초 후 24:59로 카운트다운되어야 합니다.");
     }
 
     @Test
+    @DisplayName("다른 시간으로 타이머를 설정할 수 있다.")
     void canSetTimerWithDifferentDuration() {
+        // given : 5분 작업 타이머 설정
+        mainWindow.setWorkDuration(5);
 
+        // when : 타이머 시작
+        mainWindow.startTimer();
+
+        // then : 05:00 표시
+        assertEquals("05:00", mainWindow.getDisplayedTime(),
+                "설정한 5분이 05:00으로 표시되어야 합니다.");
     }
 }
